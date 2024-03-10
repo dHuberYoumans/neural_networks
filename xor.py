@@ -12,20 +12,22 @@ X = np.reshape([[0, 0], [0, 1], [1, 0], [1, 1]], (4, 2, 1)) # shape: 4 states | 
 Y = np.reshape([[0], [1], [1], [0]], (4, 1, 1)) # shape: 4 states | each a number (0 or 1) | list
 
 # define network
-tanh_activation = [
-    ll.Dense(2,3), # dense(input_size,output_size)
-    ll.Tanh(),
-    ll.Dense(3,1),
-    ll.Tanh()]
-
-# sigmoid_activation = [
-#     ll.Dense(2,3), # dense(input_size,output_size)
-#     ll.Sigmoid(),
+# tanh_activation = [
+#     ll.Dense(2,3), 
+#     ll.Tanh(),
 #     ll.Dense(3,1),
-#     ll.Sigmoid()]
+#     ll.Tanh()]
 
-xor_network = nnl.network(tanh_activation)
-    
+# xor_network = nnl.network(tanh_activation)
+
+sigmoid_activation = [
+    ll.Dense(2,3), 
+    ll.Sigmoid(),
+    ll.Dense(3,1),
+    ll.Sigmoid()]
+
+xor_network = nnl.network(sigmoid_activation)
+
 
 # train the network
 epochs = 10_000
@@ -41,17 +43,20 @@ input('Plot dicision bounndary: ')
 
 # dicision bounddary
 steps= 21
-points = []
-for x in np.linspace(0, 1, steps):
-    for y in np.linspace(0, 1, steps):
-        z = xor_network.predict([[x], [y]])
-        points.append([x, y, z[0,0]])
+x = np.linspace(0,1,steps) # coordinate x-values
+y = np.linspace(0,1,steps) # coordinate y-values
+xx, yy = np.meshgrid(x,y) #create mesh
 
-points = np.array(points)
+pts = np.vstack((xx.ravel(),yy.ravel())).T # get coordinates
 
+pts = pts.reshape(pts.shape[0],2,1) # correct form: (# pts, dim of column vector, 1) for input into network.predict()
+
+z = np.array(list(map(xor_network.predict,pts))) # run the network on all pts p = (x,y)
+
+# plot
 fig = plt.figure()
 ax = fig.add_subplot(111, projection="3d")
-ax.scatter(points[:, 0], points[:, 1], points[:, 2], points[:, 2], color="grey")
+ax.scatter(xx,yy,z)
 plt.show()
 
 
