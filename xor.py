@@ -12,21 +12,21 @@ X = np.reshape([[0, 0], [0, 1], [1, 0], [1, 1]], (4, 2, 1)) # shape: 4 states | 
 Y = np.reshape([[0], [1], [1], [0]], (4, 1, 1)) # shape: 4 states | each a number (0 or 1) | list
 
 # define network
-# tanh_activation = [
-#     ll.Dense(2,3), 
-#     ll.Tanh(),
-#     ll.Dense(3,1),
-#     ll.Tanh()]
-
-# xor_network = nnl.network(tanh_activation)
-
-sigmoid_activation = [
+tanh_activation = [
     ll.Dense(2,3), 
-    ll.Sigmoid(),
+    ll.Tanh(),
     ll.Dense(3,1),
-    ll.Sigmoid()]
+    ll.Tanh()]
 
-xor_network = nnl.network(sigmoid_activation)
+xor_network = nnl.network(tanh_activation)
+
+# sigmoid_activation = [
+#     ll.Dense(2,3), 
+#     ll.Sigmoid(),
+#     ll.Dense(3,1),
+#     ll.Sigmoid()]
+
+# xor_network = nnl.network(sigmoid_activation)
 
 
 # train the network
@@ -45,12 +45,11 @@ input('Plot dicision bounndary: ')
 steps= 21
 x = np.linspace(0,1,steps) # coordinate x-values
 y = np.linspace(0,1,steps) # coordinate y-values
-xx, yy = np.meshgrid(x,y) #create mesh
+grid = np.meshgrid(x,y) #create mesh
+xx,yy = grid
 
-pts = np.vstack((xx.ravel(),yy.ravel())).T # get coordinates
-
-pts = pts.reshape(pts.shape[0],2,1) # correct form: (# pts, dim of column vector, 1) for input into network.predict()
-
+ # get coordinates; correct form: (# pts, dim of column vector, 1) for input into network.predict()
+pts = np.array(grid).T.reshape(-1,2,1) # w/o transpose, grid gets shapes into tuples of values next to each other resulting into (x,x) and (y,y) points not (x,y) 
 z = np.array(list(map(xor_network.predict,pts))) # run the network on all pts p = (x,y)
 
 # plot
