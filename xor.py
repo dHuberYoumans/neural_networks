@@ -52,11 +52,45 @@ xx,yy = grid
 pts = np.array(grid).T.reshape(-1,2,1) # w/o transpose, grid gets shapes into tuples of values next to each other resulting into (x,x) and (y,y) points not (x,y) 
 z = np.array(list(map(xor_network.predict,pts))) # run the network on all pts p = (x,y)
 
+
 # plot
 fig = plt.figure()
-ax = fig.add_subplot(111, projection="3d")
+ax = fig.add_subplot(121, projection="3d")
 ax.scatter(xx,yy,z)
+ax.set_title('dicision boundary')
+ax.set_xlabel('x')
+ax.set_ylabel('y')
+ax.legend()
+
 plt.show()
+
+''' REMARK: 
+note that we have 2 ways to create a list of 2d vectors representing the points in the unit square:
+
+(1) pts = np.array(grid).T.reshape(-1,2,1) 
+(2) pts_two = np.vstack((xx.ravel(),yy.ravel())).reshape(-1,2,1)
+ 
+While (1) creates a list where the coordinate vectors are arranged ROW-wise, (2) arranges them COLUMN-wise.
+In fact, (1) goes through the grid according to 
+for x in x-values:
+    for y in y-values:
+        p = (x,y)
+
+while (2) loops first over x and then over y
+for y in y-values:
+    for x in x-values:
+        p = (x,y)
+
+
+The order, however, is important when we use plt.scatter(xx,yy,z)! (xx,yy = np.meshgrid(x,y), x,y = np.linspace(...))
+In fact, plt.scatter(xx,yy,'-') shows a plot with vertical linies. 
+This means that plt.scatter uses method (1): it first loops over all y values, keeping x fixed and then increments x.
+Hence if we would use method (2) the plot would result in a random set of points since the order of scatter(xx,yy, ) 
+and how we created z would be opposite.
+'''
+
+
+
 
 
 
