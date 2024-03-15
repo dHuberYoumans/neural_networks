@@ -23,14 +23,15 @@ class network:
         for e in range(epochs):
             self.error = 0
             for x,y in zip(x_train,y_train):
+                
                 # forward propagation
-                self.y_predicted = self.predict(x)
+                self.y_hat = self.predict(x)
 
                 # update error
-                self.error += loss(y,self.y_predicted)
+                self.error += loss(y,self.y_hat)
 
                 # backward propagation
-                self.grad = self.learn(dloss(y,self.y_predicted),learning_rate)
+                self.grad = self.learn(dloss(y,self.y_hat),learning_rate)
 
                 # normalize error 
                 self.error /= len(x_train)

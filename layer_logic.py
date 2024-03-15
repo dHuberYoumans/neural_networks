@@ -3,6 +3,10 @@
 from abc import ABC, abstractmethod
 from typing import Any
 import numpy as np
+from numpy.core.multiarray import array as array
+from scipy import signal
+import binary_decimal_representation as btd
+
 
 # strategy pattern for layers
 class Layer(ABC): 
@@ -55,7 +59,74 @@ class Dense(Layer):
         self.bias -= self.alpha * self.grad_E # update bias
         
         return self.input_gradient
+    
+class one_dim_convolution(Layer):
+    ''' concrete strategy for 1d convolution layer '''
+    def __init__(self,input_length : int ,kernel_length : int, depth : int):
+        self.input_length = input_length
+        self.kernel_length = kernel_length
+        self.depth = depth
+        self.kernel = np.random.rand(self.depth,self.kernel_length)
+        self.bias = np.random.rand(self.depth, self.input_length - self.kernel_length+1)
 
+    def forward(self,input : np.array) -> np.array:  
+        self.input = input  
+        self.output = np.array([self.bias[i] + signal.correlate(input,self.kernel[i],'valid') for i in range(self.depth)])
+        return self.output
+
+    def backward(self, grad_output: np.array, learning_rate: float) -> np.array:
+        # compute bias gradient 
+        self.grad_bias = grad_output
+        # compute kernel gradient
+        self.grad_kernel = np.array([signal.correlate(self.input, grad_output[i],'valid') for i in range(self.depth)])
+        # compute input gradient
+        self.grad_input = sum(np.array([signal.correlate(grad_output[i],self.kernel[i],'valid') for i in range(self.depth)]))
+        # update parameters
+        self.kernel += - learning_rate*self.grad_kernel
+        self.bias += - learning_rate*self.grad_bias
+
+        return self.grad_input
+
+class Reshape(Layer):
+    def __init__(self,input_shape,output_shape):
+        self.input_shape = input_shape
+        self.output_shape = output_shape
+
+    def forward(self, input : np.array) -> np.array:
+        return input.reshape(self.output_shape)
+    
+    def backward(self, grad_output : np.array, learning_rate : float) -> np.array:
+        return grad_output.reshape(self.input_shape)
+    
+class BinaryToDecimal(Layer): 
+    def __init__(self,input_length,kernel_length): 
+        self.input_length = input_length
+        self.kernel_length = kernel_length
+        
+
+    def forward(self, input: np.array) -> np.array: 
+        self.input = input
+        self.to_return = []
+        for i in range(self.input.shape[0]):
+            self.to_return.append(btd.signed_binary_to_decimal(self.input[i]))
+
+        self.to_return = np.array(self.to_return)
+        self.to_return = self.to_return.reshape(1,len(self.to_return))
+
+
+        return np.array(self.to_return)
+    
+    def backward(self,  grad_output : np.array, learning_rate : float ) -> np.array:
+        self.to_return = []
+        self.grad_output = [int(np.ceil(x)) for x in grad_output[0]]
+        
+        for i in range(len(self.grad_output)):
+            self.to_return.append(btd.signed_decimal_to_binary_list(self.grad_output[i],self.input_length-self.kernel_length+1))
+
+        self.to_return = np.array(self.to_return)
+        
+        return np.array(self.to_return)
+    
 # strategy pattern for activation functions 
 class Activation(Layer): # abstract activation layer
     """ abstract strategy for activation layer """
