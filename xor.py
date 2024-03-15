@@ -1,11 +1,13 @@
 # xor test
 import layer_logic as ll
 import neural_network_logic as nnl
+import activation_layer_logic as all
 from loss_functions import mse, dmse
 import numpy as np
 import time
 import matplotlib.pyplot as plt
 from mpl_toolkits import mplot3d
+
 
 if __name__=='__main__':
 
@@ -16,20 +18,11 @@ if __name__=='__main__':
     # define network
     tanh_activation = [
         ll.Dense(2,3), 
-        ll.Tanh(),
+        all.Tanh(),
         ll.Dense(3,1),
-        ll.Tanh()]
+        all.Tanh()]
 
     xor_network = nnl.network(tanh_activation)
-
-    # sigmoid_activation = [
-    #     ll.Dense(2,3), 
-    #     ll.Sigmoid(),
-    #     ll.Dense(3,1),
-    #     ll.Sigmoid()]
-
-    # xor_network = nnl.network(sigmoid_activation)
-
 
     # train the network
     epochs = 10_000

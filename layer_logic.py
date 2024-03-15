@@ -5,7 +5,6 @@ from typing import Any
 import numpy as np
 from numpy.core.multiarray import array as array
 from scipy import signal
-import binary_decimal_representation as btd
 
 
 # strategy pattern for layers
@@ -97,69 +96,4 @@ class Reshape(Layer):
     
     def backward(self, grad_output : np.array, learning_rate : float) -> np.array:
         return grad_output.reshape(self.input_shape)
-    
-class BinaryToDecimal(Layer): 
-    def __init__(self,input_length,kernel_length): 
-        self.input_length = input_length
-        self.kernel_length = kernel_length
-        
-
-    def forward(self, input: np.array) -> np.array: 
-        self.input = input
-        self.to_return = []
-        for i in range(self.input.shape[0]):
-            self.to_return.append(btd.signed_binary_to_decimal(self.input[i]))
-
-        self.to_return = np.array(self.to_return)
-        self.to_return = self.to_return.reshape(1,len(self.to_return))
-
-
-        return np.array(self.to_return)
-    
-    def backward(self,  grad_output : np.array, learning_rate : float ) -> np.array:
-        self.to_return = []
-        self.grad_output = [int(np.ceil(x)) for x in grad_output[0]]
-        
-        for i in range(len(self.grad_output)):
-            self.to_return.append(btd.signed_decimal_to_binary_list(self.grad_output[i],self.input_length-self.kernel_length+1))
-
-        self.to_return = np.array(self.to_return)
-        
-        return np.array(self.to_return)
-    
-# strategy pattern for activation functions 
-class Activation(Layer): # abstract activation layer
-    """ abstract strategy for activation layer """
-    def __init__(self, activation, dactivation):
-        self.activation = activation # need to pass functions, e.g. lambda functions
-        self.dactivation = dactivation
-
-    def forward(self, input : np.array) -> np.array:
-        self.input = input
-        return self.activation(self.input)
-
-    def backward(self, grad_output : np.array, learning_rate : float) -> np.array:
-        self.grad_E = grad_output
-        return np.multiply(self.grad_E,self.dactivation(self.input))
-    
-class Tanh(Activation): # concrete activation layer
-     """ concrete strategy for activation layer 
-     
-     implements tanh(x) as activation function
-     """
-     def __init__(self):
-        tanh = lambda x : np.tanh(x)
-        dtanh = lambda x : 1 - np.tanh(x)**2
-        super().__init__(tanh,dtanh)
-
-class Sigmoid(Activation): # concrete activation layer
-    """ concrete strategy for activation layer 
-    
-    implements sigmoid function s(x) = 1 / (1 + exp(-x)) as activation function
-    """
-    def __init__(self):
-        sigmoid = lambda x : 1 / (1 + np.exp(-x))
-        dsigmoid = lambda x : sigmoid(x)*(1 - sigmoid(x))
-        super().__init__(sigmoid, dsigmoid)
-    
-    
+       
