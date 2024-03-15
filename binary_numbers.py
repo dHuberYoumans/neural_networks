@@ -5,9 +5,6 @@ import neural_network_logic as nnl
 from loss_functions import binary_cross_entropy, dbinary_cross_entropy
 import numpy as np
 import time
-import matplotlib.pyplot as plt
-from mpl_toolkits import mplot3d
-import binary_decimal_representation as bdr
 
 if __name__=='__main__':
     # define data 
