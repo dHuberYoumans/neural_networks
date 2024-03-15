@@ -8,22 +8,22 @@ import numpy as np
 import time
 
 if __name__=='__main__':
+    # generate data (as column vectors)
     samples = 1000
     bits = len(bin(samples).split('b')[1])
-    x = np.random.randint(0, 2, size=(samples, bits))
-    y = np.array([ [ [int(c) for c in bin(i).split('b')[1].zfill(bits)] ] for i in range(samples)])
+    x = np.random.randint(0, 2, size=(samples, bits,1))
+    y = np.array([ [ [int(c) for c in bin(i).split('b')[1].zfill(bits)] ] for i in range(samples)]).reshape(samples,bits,1)
 
     # defining the network 
-    kernel_length = 3
+    kernel_length = 2
     depth = 16
     y_hidden_length = bits - kernel_length + 1
 
     network= [
         ll.one_dim_convolution(bits,kernel_length,depth), 
         all.ReLu(),
-        ll.Reshape((depth,y_hidden_length),(y_hidden_length*depth,-1)),
+        ll.Reshape((depth,y_hidden_length,1),(depth*y_hidden_length,-1)),
         ll.Dense(y_hidden_length*depth,bits),
-        ll.Reshape((bits,1),(1,bits)),
         all.Sigmoid()
         ]
 
@@ -39,8 +39,8 @@ if __name__=='__main__':
     tend = time.time()
     print(f'run time [s]: {tend - tstart:.2f}')
     for i in range(10):
-        y_test = np.random.randint(0, 2, size=(1, bits))
-        y_hat_prob = bin_network.predict(y_test[0])[0]
-        y_hat = np.array([ int(np.round(a)) for a in bin_network.predict(y_test[0])[0] ])
-        print(f'y_test = {y_test[0]}')
+        y_test = np.random.randint(0, 2, size=(bits,1))
+        # y_hat_prob = bin_network.predict(y_test)
+        y_hat = np.array([ int(np.round(a)) for a in bin_network.predict(y_test)])
+        print(f'y_test = {y_test.T[0]}')
         print(f'y_hat  = {y_hat}\n')

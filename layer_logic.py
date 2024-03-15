@@ -60,17 +60,20 @@ class Dense(Layer):
         return self.input_gradient
     
 class one_dim_convolution(Layer):
-    ''' concrete strategy for 1d convolution layer '''
+    ''' concrete strategy for 1d convolution layer 
+    forward method: takes column vectors as input, reshapes them into row vectors and correlates them with kernels
+    backward method: ... 
+    '''
     def __init__(self,input_length : int ,kernel_length : int, depth : int):
         self.input_length = input_length
         self.kernel_length = kernel_length
         self.depth = depth
-        self.kernel = np.random.rand(self.depth,self.kernel_length)
-        self.bias = np.random.rand(self.depth, self.input_length - self.kernel_length+1)
+        self.kernel = np.random.rand(self.depth,self.kernel_length,1)
+        self.bias = np.random.rand(self.depth, self.input_length - self.kernel_length+1,1)
 
-    def forward(self,input : np.array) -> np.array:  
-        self.input = input  
-        self.output = np.array([self.bias[i] + signal.correlate(input,self.kernel[i],'valid') for i in range(self.depth)])
+    def forward(self,input : np.array) -> np.array: 
+        self.input = input
+        self.output = np.array([(self.bias[i] + signal.correlate(input,self.kernel[i],'valid')) for i in range(self.depth)])
         return self.output
 
     def backward(self, grad_output: np.array, learning_rate: float) -> np.array:
