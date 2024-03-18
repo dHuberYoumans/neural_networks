@@ -1,2 +1,3 @@
-notes/
-__pycache__/
+notes/ # personal notes
+__pycache__/ # python
+*~ # vim backups
