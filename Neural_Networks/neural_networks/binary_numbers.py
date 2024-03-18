@@ -1,5 +1,6 @@
 # (1d) convolution nn to learn binary numbers
-
+import sys
+sys.path.insert(0,'../logic/')
 import layer_logic as ll
 import neural_network_logic as nnl
 import activation_layer_logic as all

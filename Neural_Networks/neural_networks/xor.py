@@ -1,12 +1,14 @@
 # xor test
-import layer_logic as ll
-import neural_network_logic as nnl
-import activation_layer_logic as all
-from loss_functions import mse, dmse
 import numpy as np
 import time
 import matplotlib.pyplot as plt
 from mpl_toolkits import mplot3d
+
+import layer_logic as ll
+import neural_network_logic as nnl
+import activation_layer_logic as all
+from loss_functions import mse, dmse
+
 
 
 if __name__=='__main__':
