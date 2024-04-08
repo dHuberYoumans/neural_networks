@@ -15,4 +15,4 @@ Afterwards, we can focus on 2.
 
 * **xor.py** - script solving xor. This script serves as a quick test for the implementation of the dense layer.
 
-* **mnist1d.py**, **mnist2d.py** - scripts solving mnist's image classification. The scripts serve as tests for the 1d and 2d cnn layer.
+* **mnist1d.py**, **mnist2d.py** - scripts solving mnist's image classification. The scripts serve as tests for the 1d and 2d CNN layer. mnist1d.py classifies for simplicity only images of 0 and 1 using a final sigmoid activation and a binary_cross_entropy loss; mnist2d.py classifies images of 0,1 and 2 using a final softmax activation and a categorical cross entropy loss (it hence serves equally as a test for the softmax layer and the CCE loss)
