@@ -36,6 +36,6 @@ class network:
                 error /= len(x_train)
 
                 if verbose:
-                    print(f"epoch {e + 1}/{epochs} {'':<10} sample {i+1}/{x_train.shape[0]} {'':<10} error = {self.error:.5e}",end='\r')
+                    print(f"epoch {e + 1}/{epochs} {'':<10} sample {i+1}/{x_train.shape[0]} {'':<10} error = {error:.5e}",end='\r')
         print()
 
