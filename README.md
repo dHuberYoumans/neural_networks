@@ -10,3 +10,9 @@ My former supervisor and friend often claims that the only theorem they truely u
 
 This project is in their spirit: Firstly, small exercises aimed at understanding neural networks of the simplest possible architecture. 
 Afterwards, we can focus on 2.
+
+## Contents
+
+* **xor.py** - script solving xor. This script serves as a quick test for the implementation of the dense layer.
+
+* **mnist1d.py**, **mnist2d.py** - scripts solving mnist's image classification. The scripts serve as tests for the 1d and 2d cnn layer.
