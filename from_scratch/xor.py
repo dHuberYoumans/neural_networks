@@ -28,13 +28,13 @@ if __name__=='__main__':
 
     # train the network
     epochs = 10_000
-    alpha = 0.1# learning rate
+    alpha = 0.01# learning rate
     verbose = True
 
     tstart = time.time()
     xor_network.train(mse,dmse,X,Y,epochs,alpha,verbose)
     tend = time.time()
-    print(f'run time [s]: {tend - tstart:.2f}')
+    print(f'\nrun time [s]: {tend - tstart:.2f}')
     input('Plot dicision bounndary: ')
 
 
@@ -57,7 +57,7 @@ if __name__=='__main__':
     ax.set_title('dicision boundary')
     ax.set_xlabel('x')
     ax.set_ylabel('y')
-    ax.legend()
+    # ax.legend()
 
     plt.show()
 
