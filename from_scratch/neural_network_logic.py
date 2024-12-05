@@ -1,5 +1,6 @@
 import layer_logic as ll
 import numpy as np
+import tqdm.auto
 
 class network:
     def __init__(self, layers : list[ll.Layer]):
@@ -13,11 +14,11 @@ class network:
 
         return self.output
 
-    def train(self, loss, dloss, x_train : list[np.array], y_train : list[np.array], epochs : int, learning_rate : float, verbose : bool = True):
-        print('\n')
-        for e in range(epochs):
+    def train(self, loss, dloss, x_train : list[np.array], y_train : list[np.array], epochs : int, learning_rate : float, verbose : bool = False):
+        # print('\n')
+        for _ in tqdm.auto.tqdm(range(epochs)):
             error = 0.0
-            for i, (x,y) in enumerate(zip(x_train,y_train)):
+            for _, (x,y) in enumerate(zip(x_train,y_train)):
                 
                 # forward propagation
                 self.y_hat = self.predict(x)
@@ -35,7 +36,8 @@ class network:
                 # normalize error 
                 error /= len(x_train)
 
-                if verbose:
-                    print(f"epoch {e + 1}/{epochs} {'':<10} sample {i+1}/{x_train.shape[0]} {'':<10} error = {error:.5e}",end='\r')
-        print()
+                # OLD CODE - NOW USE TQDM FOR PROGRESSBAR
+                # if verbose:
+                #     print(f"epoch {e + 1}/{epochs} {'':<10} sample {i+1}/{x_train.shape[0]} {'':<10} error = {error:.5e}",end='\r')
+       
 
